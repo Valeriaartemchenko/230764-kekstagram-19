@@ -28,6 +28,9 @@ var createRandomComment = function (avatarsArray, commentArray, namesArray) {
   };
 };
 
+var test1 = createRandomComment(AVATARS, COMMENTS, NAMES);
+console.log(test1);
+
 // создаем массив из случайных комментариев
 var createCommentsList = function (randomCommentsAmount) {
   var commentsList = [];
@@ -36,6 +39,9 @@ var createCommentsList = function (randomCommentsAmount) {
   }
   return commentsList;
 };
+
+var test2 = createCommentsList(3);
+console.log(test2);
 
 // var commentsList = createCommentsList();
 // функция для создания массива объектов из n-количеством описаний фотографий
@@ -53,6 +59,7 @@ var createPhotoDescription = function (amount) {
 };
 // создаем масив из 25 описаний фотографии
 var photoDescription = createPhotoDescription(DESCRIPTION_ARRAY_LENGTH);
+console.log(photoDescription);
 
 // создание dom елемента
 
