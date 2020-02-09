@@ -28,6 +28,9 @@ var createRandomComment = function (avatarsArray, commentArray, namesArray) {
   };
 };
 
+var test1 = createRandomComment(AVATARS, COMMENTS, NAMES);
+console.log(test1);
+
 // создаем массив из случайных комментариев
 var createCommentsList = function (randomCommentsAmount) {
   var commentsList = [];
@@ -37,22 +40,26 @@ var createCommentsList = function (randomCommentsAmount) {
   return commentsList;
 };
 
+var test2 = createCommentsList(3);
+console.log(test2);
+
 // var commentsList = createCommentsList();
 // функция для создания массива объектов из n-количеством описаний фотографий
-var createPhotoDescription = function (amount) {
-  var photoDescription = [];
+var createPhotos = function (amount) {
+  var photos = [];
   for (var i = 0; i < amount; i++) {
-    photoDescription.push({
+    photos.push({
       url: 'photos/' + (i + 1) + '.jpg',
       description: 'some description',
       likes: getRandomNumber(MAX_LIKES) + MIN_LIKES,
       comments: createCommentsList(getRandomNumber(3) + 1)
     });
   }
-  return photoDescription;
+  return photos;
 };
 // создаем масив из 25 описаний фотографии
-var photoDescription = createPhotoDescription(DESCRIPTION_ARRAY_LENGTH);
+var photos = createPhotos(DESCRIPTION_ARRAY_LENGTH);
+console.log(photos);
 
 // создание dom елемента
 
@@ -60,7 +67,7 @@ var usersPicturesList = document.querySelector('.pictures');
 var userPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 
-var createUsersPictures = function (amount, photo) {
+var renderPictures = function (amount, photo) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < amount; i++) {
     var photoElement = userPictureTemplate.cloneNode(true);
@@ -73,52 +80,18 @@ var createUsersPictures = function (amount, photo) {
   return fragment;
 };
 
-usersPicturesList.appendChild(createUsersPictures(DESCRIPTION_ARRAY_LENGTH, photoDescription));
+
+usersPicturesList.appendChild(renderPictures(DESCRIPTION_ARRAY_LENGTH, photos));
 
 /* ----------------task 3---------------- */
-// просморт фото в полноэкранном режиме
-var bigPhoto = document.querySelector('.picture');
-var previewPhoto = document.querySelector('.big-picture');
-var previewPhotoImage = previewPhoto.querySelector('.big-picture__img');
-var likesCount = previewPhoto.querySelector('.likes-count');
-var commentsCount = previewPhoto.querySelector('.comments-count');
-var socialCaption = previewPhoto.querySelector('.social__caption');
-var socialComments = previewPhoto.querySelector('.social__comments');
-var socialPicture = previewPhoto.querySelector('.social__picture');
-var socialText = previewPhoto.querySelector('.social__text');
-var closePreviewButton = previewPhoto.querySelector('.cancel');
-var picture = photoDescription[0];
-
-var createBigPicture = function (photo) {
-  previewPhotoImage.src = photo.url;
-  likesCount.textContent = photo.likes;
-  commentsCount.textContent = photo.comments.length;
-  socialCaption.textContent = photo.description;
-};
-
-var createCommentsElement = function (photo) {
-  var fragment = document.createDocumentFragment();
-  for (var i = 0; i < photo.comments.length; i++) {
-    var commentElement = document.querySelector('.social__comment').cloneNode(true);
-    socialPicture.src = photo.comments[i].avatar;
-    socialPicture.alt = photo.comments[i].name;
-    socialText.textContent = photo.comments[i].message;
-    fragment.appendChild(commentElement);
-  }
-  return fragment;
-};
-
-function createComments(photo) {
-  var fragment = createCommentsElement(photo);
-  socialComments.innerHTML = '';
-  socialComments.appendChild(fragment);
-}
-
-createBigPicture(picture);
-createComments(picture);
-
-/* ----------------скрыть или показать попап большого изображения---------------- */
-var ESC_KEYCODE = 27;
+var photoInPreview = photos[0];
+var bigPicture = document.querySelector('.big-picture');
+var bigPictureImg = bigPicture.querySelector('.big-picture__img').firstElementChild;
+console.log(bigPictureImg);
+var likesCount = bigPicture.querySelector('.likes-count');
+var commentCount = bigPicture.querySelector('.comments-count');
+var socialComments = bigPicture.querySelector('.social__comments');
+var socialCaption = bigPicture.querySelector('.social__caption');
 
 // открытие
 var showElement = function (element) {
@@ -130,57 +103,25 @@ var hideElement = function (element) {
   element.classList.add('hidden');
 };
 
-bigPhoto.addEventListener('click', function () {
-  showElement(previewPhoto);
-});
+showElement(bigPicture);
 
-closePreviewButton.addEventListener('click', function () {
-  hideElement(previewPhoto);
-});
-
-document.addEventListener('keydown', function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    hideElement(previewPhoto);
-  }
-});
-
-hideElement(previewPhoto.querySelector('.social__comment-count'));
-hideElement(previewPhoto.querySelector('.comments-loader'));
-
-// --------------------загрузка нового изображения на сайт------задание 4
-var upload = document.querySelector('.img-upload');
-var uploadFileInput = upload.querySelector('#upload-file');
-var imageEditingForm = upload.querySelector('.img-upload__overlay');
-var closeEditingFormButton = imageEditingForm.querySelector('#upload-cancel');
-
-// обработник нажатия клавиши escape
-var onFormEscPress = function (evt) {
-  if (evt.keyCode === ESC_KEYCODE) {
-    hideForm();
-  }
+var renderBigPicture = function(picture){
+  bigPictureImg.src = picture.url;
+  likesCount.textContent = picture.likes;
+  commentCount.textContent = picture.comments.length;
+  socialCaption.textContent = picture.description;
 };
 
-// показать форму редактирования
-var showForm = function () {
-  //  showElement(imageEditingForm); //какой варинт лучше?
-  imageEditingForm.classList.remove('hidden');
-  document.addEventListener('keydown', onFormEscPress);
-};
+renderBigPicture(photoInPreview);
 
-// скрыть форму редактирования
-var hideForm = function () {
-  //  hideElement(imageEditingForm);
-  imageEditingForm.classList.add('hidden');
-  document.removeEventListener('keydown', onFormEscPress);
-  uploadFileInput.value = ''; // сброс поля
-};
+var socialCommentCount = bigPicture.querySelector('.social__comment-count');
+hideElement(socialCommentCount);
 
-// при выборе фото открываем форму редактирования
-uploadFileInput.addEventListener('change', function () {
-  showForm();
-});
+var commentsLoader = bigPicture.querySelector('.comments-loader');
+hideElement(commentsLoader);
 
-// при нажатии на крестик форма скрывается
-closeEditingFormButton.addEventListener('click', function () {
-  hideForm();
-});
+
+document.body.classList.add('modal-open');
+
+
+
