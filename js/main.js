@@ -103,7 +103,7 @@ var hideElement = function (element) {
   element.classList.add('hidden');
 };
 
-showElement(bigPicture);
+//showElement(bigPicture);
 
 var renderBigPicture = function(picture){
   bigPictureImg.src = picture.url;
@@ -121,7 +121,98 @@ var commentsLoader = bigPicture.querySelector('.comments-loader');
 hideElement(commentsLoader);
 
 
-document.body.classList.add('modal-open');
+//проаеряет открыто ли модальное окно, и если да выключает скрол  страницы
+var checkModalOpen = function(element){
+  if (!element.classList.contains('hidden')) {
+    document.body.classList.add('modal-open');
+    console.log('no scroll');
+  } else {
+    document.body.classList.remove('modal-open');
+    console.log('scroll');
+  }
+}
 
+/* ----------------скрыть или показать попап большого изображения---------------- */
+var ESC_KEYCODE = 27;
+var closePreviewBtn = document.querySelector('.big-picture__cancel');
+var picture = document.querySelector('.picture');
+console.log(picture);
+
+// открытие элемента
+var showElement = function (element) {
+  element.classList.remove('hidden');
+};
+
+// закрытие элемента
+var hideElement = function (element) {
+  element.classList.add('hidden');
+};
+
+var pictureClickHandler = function(){
+  showElement(bigPicture);
+  checkModalOpen(bigPicture);
+
+};
+
+var closeBtnClickHandler = function(){
+  hideElement(bigPicture);
+  checkModalOpen(bigPicture);
+}
+//обработка закрытия при нажатии на крестик
+
+closePreviewBtn.addEventListener('click', closeBtnClickHandler);
+//закрытие при нажатии esc
+
+document.addEventListener('keydown', function(evt){
+  if (evt.keyCode === ESC_KEYCODE) {
+    //hideElement(bigPicture);
+    //checkModalOpen(bigPicture);
+    closeBtnClickHandler();
+  }
+});
+
+
+var showBigPhoto = function(){
+
+  var photosCollection = document.querySelectorAll('.picture');
+  var photosCollectionLength = photosCollection.length;
+  console.log(photosCollection, photosCollectionLength);
+  //вешает обработчик на каждую фотографию
+  for (var i = 0; i < photosCollectionLength; i++){
+    photosCollection[i].addEventListener('click', pictureClickHandler);
+  }
+
+};
+
+showBigPhoto();
+
+
+
+/*-----------------------task 4 ----------------------*/
+
+var upload = document.querySelector('.img-upload');
+var uploadFileField = upload.querySelector('#upload-file');
+var closeEditFormBtn = upload.querySelector('#upload-cancel');
+var imageEditForm = upload.querySelector('.img-upload__overlay');
+
+var editFormFieldChangeHandler = function (){
+  showElement(imageEditForm);
+  checkModalOpen(imageEditForm);
+}
+
+var closeEditFormClickHandler = function(){
+  hideElement(imageEditForm);
+  checkModalOpen(imageEditForm);
+}
+
+uploadFileField.addEventListener('change', editFormFieldChangeHandler);
+
+closeEditFormBtn.addEventListener('click', closeEditFormClickHandler);
+
+document.addEventListener('keydown', function(evt){
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeEditFormClickHandler();
+  }
+});
 
 
