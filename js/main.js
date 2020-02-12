@@ -148,11 +148,6 @@ var hideElement = function (element) {
   element.classList.add('hidden');
 };
 
-var pictureClickHandler = function(){
-  showElement(bigPicture);
-  checkModalOpen(bigPicture);
-
-};
 
 var closeBtnClickHandler = function(){
   hideElement(bigPicture);
@@ -171,24 +166,17 @@ document.addEventListener('keydown', function(evt){
   }
 });
 
-
-var showBigPhoto = function(){
-
-  var photosCollection = document.querySelectorAll('.picture');
-  var photosCollectionLength = photosCollection.length;
-  console.log(photosCollection, photosCollectionLength);
-  //вешает обработчик на каждую фотографию
-  for (var i = 0; i < photosCollectionLength; i++){
-    photosCollection[i].addEventListener('click', pictureClickHandler);
+function imageClickHandler (evt) {
+    if (evt.target.matches('.picture__img')) {
+      //console.log(evt.target);
+      showElement(bigPicture);
+      checkModalOpen(bigPicture);
+    }
   }
 
-};
+document.addEventListener('click', imageClickHandler);
 
-showBigPhoto();
-
-
-
-/*-----------------------task 4 ----------------------*/
+/*-----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
 var uploadFileField = upload.querySelector('#upload-file');
