@@ -28,8 +28,8 @@ var createRandomComment = function (avatarsArray, commentArray, namesArray) {
   };
 };
 
-var test1 = createRandomComment(AVATARS, COMMENTS, NAMES);
-console.log(test1);
+//var test1 = createRandomComment(AVATARS, COMMENTS, NAMES);
+//console.log(test1);
 
 // создаем массив из случайных комментариев
 var createCommentsList = function (randomCommentsAmount) {
@@ -40,8 +40,8 @@ var createCommentsList = function (randomCommentsAmount) {
   return commentsList;
 };
 
-var test2 = createCommentsList(3);
-console.log(test2);
+//var test2 = createCommentsList(3);
+//console.log(test2);
 
 // var commentsList = createCommentsList();
 // функция для создания массива объектов из n-количеством описаний фотографий
@@ -59,7 +59,7 @@ var createPhotos = function (amount) {
 };
 // создаем масив из 25 описаний фотографии
 var photos = createPhotos(DESCRIPTION_ARRAY_LENGTH);
-console.log(photos);
+//console.log(photos);
 
 // создание dom елемента
 
@@ -87,7 +87,7 @@ usersPicturesList.appendChild(renderPictures(DESCRIPTION_ARRAY_LENGTH, photos));
 var photoInPreview = photos[0];
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img').firstElementChild;
-console.log(bigPictureImg);
+//console.log(bigPictureImg);
 var likesCount = bigPicture.querySelector('.likes-count');
 var commentCount = bigPicture.querySelector('.comments-count');
 var socialComments = bigPicture.querySelector('.social__comments');
@@ -125,10 +125,10 @@ hideElement(commentsLoader);
 var checkModalOpen = function(element){
   if (!element.classList.contains('hidden')) {
     document.body.classList.add('modal-open');
-    console.log('no scroll');
+    //console.log('no scroll');
   } else {
     document.body.classList.remove('modal-open');
-    console.log('scroll');
+    //console.log('scroll');
   }
 }
 
@@ -136,7 +136,7 @@ var checkModalOpen = function(element){
 var ESC_KEYCODE = 27;
 var closePreviewBtn = document.querySelector('.big-picture__cancel');
 var picture = document.querySelector('.picture');
-console.log(picture);
+//console.log(picture);
 
 // открытие элемента
 var showElement = function (element) {
@@ -168,7 +168,8 @@ document.addEventListener('keydown', function(evt){
 
 function imageClickHandler (evt) {
     if (evt.target.matches('.picture__img')) {
-      //console.log(evt.target);
+      console.log(evt.target, evt.target.src);
+      bigPicture.src = evt.target.src;
       showElement(bigPicture);
       checkModalOpen(bigPicture);
     }
@@ -202,5 +203,64 @@ document.addEventListener('keydown', function(evt){
     closeEditFormClickHandler();
   }
 });
+
+/* ------------task 4.2 ----------*/
+
+var scaleControlSmaller = upload.querySelector('.scale__control--smaller');
+var scaleControlBigger = upload.querySelector('.scale__control--bigger');
+var scaleControlValue = upload.querySelector('.scale__control--value');
+
+var DEFAULT_SCALE_VALUE = 100;
+var MAX_SCALE_VALUE = 100;
+var MIN_SCALE_VALUE = 25;
+var SCALE_VALUE_CHANGE_STEP = 25;
+var currentScaleValue = DEFAULT_SCALE_VALUE;
+
+scaleControlValue.value = currentScaleValue + '%';
+
+var reduceScaleValue = function (scaleValue, step,minValue){
+  if (scaleValue > minValue) {
+    scaleValue = scaleValue - step;
+    return scaleValue;
+  } else {
+    return scaleValue;
+  };
+};
+
+var increadeScaleValue = function (scaleValue, step,maxValue){
+  //scaleValue = scaleValue + step;
+  //return scaleValue;
+  if (scaleValue < maxValue) {
+    scaleValue = scaleValue + step;
+    return scaleValue;
+  } else {
+    return scaleValue;
+  };
+};
+
+var reduceClickHandler = function(){
+  currentScaleValue = reduceScaleValue(currentScaleValue,SCALE_VALUE_CHANGE_STEP,MIN_SCALE_VALUE);
+  scaleControlValue.value = currentScaleValue + '%';
+  console.log(currentScaleValue);
+};
+
+var increaseClickHandler = function(){
+  currentScaleValue = increadeScaleValue(currentScaleValue,SCALE_VALUE_CHANGE_STEP,MAX_SCALE_VALUE);
+  scaleControlValue.value = currentScaleValue + '%';
+  console.log(currentScaleValue);
+};
+
+
+scaleControlSmaller.addEventListener('click', function(){
+  reduceClickHandler();
+});
+
+
+scaleControlBigger.addEventListener('click', function(){
+ increaseClickHandler();
+});
+
+/*----------------------------------------------------------*/
+var effectLevelPin = upload.querySelector('.effect-level__pin');
 
 
