@@ -187,6 +187,7 @@ var imageEditForm = upload.querySelector('.img-upload__overlay');
 var editFormFieldChangeHandler = function (){
   showElement(imageEditForm);
   checkModalOpen(imageEditForm);
+  setDefaultEffectLevel();
 }
 
 var closeEditFormClickHandler = function(){
@@ -204,12 +205,12 @@ document.addEventListener('keydown', function(evt){
   }
 });
 
-/* ------------task 4.2 ----------*/
+/* ------------task 4.2 изменение размера изображения----------*/
 
 var scaleControlSmaller = upload.querySelector('.scale__control--smaller');
 var scaleControlBigger = upload.querySelector('.scale__control--bigger');
 var scaleControlValue = upload.querySelector('.scale__control--value');
-var imageUploadPreview = upload.querySelector('.img-upload__preview');
+var imageUploadPreview = upload.querySelector('.img-upload__preview img');
 
 var DEFAULT_SCALE_VALUE = 100;
 var MAX_SCALE_VALUE = 100;
@@ -259,12 +260,119 @@ scaleControlBigger.addEventListener('click', function() {
  increaseClickHandler();
 });
 
-
-
-
-
-
-/*----------------------------------------------------------*/
+/*-----------------наложение эфекта на изображение-----------------------------------------*/
+var effectsChoise = upload.querySelector('.effects__radio');
 var effectLevelPin = upload.querySelector('.effect-level__pin');
+var effectLevelValue = upload.querySelector('.effect-level__value');
+var effectLevelDepth = upload.querySelector('.effect-level__depth');
+var effectsRadioSet = upload.querySelector('.effects');
+var effectLevel = upload.querySelector('.img-upload__effect-level');
 
+var setDefaultEffectLevel = function(){
+    var DEFAULT_EFFECT_LEVEL = 100;
+    effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
+    effectLevelPin.style.left = DEFAULT_EFFECT_LEVEL + '%';
+    effectLevelDepth.style.width = DEFAULT_EFFECT_LEVEL + '%';
+};
+
+var clearEffects = function(element) {
+  element.removeAttribute('class');
+  imageUploadPreview.style = '';
+};
+
+var hideAndShowSlider = function(effect){
+  if (effect === 'none') {
+      effectLevel.classList.add('hidden');
+    } else {
+      effectLevel.classList.remove('hidden');
+    };
+};
+
+var effectChoiseHandler = function (evt) {
+    setDefaultEffectLevel();
+    clearEffects(imageUploadPreview);
+    var effectName = evt.target.value;
+    console.log(effectName);
+    imageUploadPreview.classList.add('effects__preview--' + effectName);
+    hideAndShowSlider(effectName);
+  };
+
+effectsRadioSet.addEventListener('click', effectChoiseHandler);
+
+
+/*------------------слайдер-------------------*/
+
+var LINE_WIDTH = 495;
+
+var changeFilterStyle = function (effectLevelPosition) {
+  if (document.querySelector('#effect-none:checked')) {
+    imageUploadPreview.style = '';
+    classList.add
+  } else if (document.querySelector('#effect-chrome:checked')) {
+    imageUploadPreview.style = 'filter: ' + 'grayscale(' + effectLevelPosition / 100 + ')';
+  } else if (document.querySelector('#effect-sepia:checked')) {
+    imageUploadPreview.style = 'filter: sepia(' + effectLevelPosition / 100 + ')';
+  } else if (document.querySelector('#effect-marvin:checked')) {
+    imageUploadPreview.style = 'filter: invert(' + effectLevelPosition + '%)';
+  } else if (document.querySelector('#effect-phobos:checked')) {
+    imageUploadPreview.style = 'filter: blur(' + 3 * effectLevelPosition / 100 + 'px)';
+  } else if (document.querySelector('#effect-heat:checked')) {
+    imageUploadPreview.style = 'filter: brightness(' + ((2 * effectLevelPosition / 100) + 1) + ')';
+  }
+};
+
+var pinLevelClickHandler = function (evt) {
+  var mouseupCoordinate = evt.offsetX;
+  console.log(mouseupCoordinate);
+
+  var effectLevelPosition = Math.floor((mouseupCoordinate / LINE_WIDTH) * 100);
+  console.log(effectLevelPosition);
+
+  effectLevelValue.value = effectLevelPosition;
+  console.log('value' + effectLevelValue.value);
+  effectLevelPin.style.left = effectLevelPosition + '%';
+  effectLevelDepth.style.width = effectLevelPosition + '%';
+  changeFilterStyle(effectLevelPosition);
+
+};
+
+effectLevel.addEventListener('mouseup', pinLevelClickHandler);
+
+/*
+var slider = document.getElementById('slider');
+var item = slider.querySelector('#item');
+var result = document.getElementById('result');
+
+var sliderClientCoords = slider.getBoundingClientRect();
+var sliderCoords = {};
+sliderCoords.top = sliderClientCoords.top + pageYOffset;
+sliderCoords.left = sliderClientCoords.left + pageXOffset;
+
+item.onmousedown = function(e){
+   item.ondragstart = function() {
+      return false;
+   };
+
+   var itemClientCoords = item.getBoundingClientRect();
+   var itemCoords = {};
+   itemCoords.top = itemClientCoords.top + pageYOffset;
+   itemCoords.left = itemClientCoords.left + pageXOffset;
+
+   var right = slider.offsetWidth - item.offsetWidth;
+
+   var shiftX = e.pageX - itemCoords.left;
+
+   document.onmousemove = function(e){
+      var newLeft = e.pageX - sliderCoords.left - shiftX;
+      if(newLeft < 0) newLeft = 0;
+      if(newLeft > right) newLeft = right;
+      item.style.left = newLeft + 'px';
+      result.innerHTML = Math.round(newLeft / right * 100) + '%';
+return false;
+   }
+
+   document.onmouseup = function(){
+      document.onmousemove = document.onmouseup = null;
+   }
+}*/
 
