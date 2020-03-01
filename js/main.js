@@ -260,6 +260,7 @@ scaleControlBigger.addEventListener('click', function() {
  increaseClickHandler();
 });
 
+
 /*-----------------наложение эфекта на изображение-----------------------------------------*/
 var effectsChoise = upload.querySelector('.effects__radio');
 var effectLevelPin = upload.querySelector('.effect-level__pin');
@@ -268,6 +269,7 @@ var effectLevelDepth = upload.querySelector('.effect-level__depth');
 var effectsRadioSet = upload.querySelector('.effects');
 var effectLevel = upload.querySelector('.img-upload__effect-level');
 
+//сбрасывает уровень эфектов до стандартных настроек
 var setDefaultEffectLevel = function(){
     var DEFAULT_EFFECT_LEVEL = 100;
     effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
@@ -277,7 +279,8 @@ var setDefaultEffectLevel = function(){
 
 var clearEffects = function(element) {
   element.removeAttribute('class');
-  imageUploadPreview.style = '';
+  imageUploadPreview.style = ' ';
+  imageUploadPreview.style.transform = 'scale(' + currentScaleValue / 100 + ')'; // чтобы размер изображения не сбрасывался до 100%
 };
 
 var hideAndShowSlider = function(effect){
@@ -292,7 +295,7 @@ var effectChoiseHandler = function (evt) {
     setDefaultEffectLevel();
     clearEffects(imageUploadPreview);
     var effectName = evt.target.value;
-    console.log(effectName);
+    //console.log(effectName);
     imageUploadPreview.classList.add('effects__preview--' + effectName);
     hideAndShowSlider(effectName);
   };
