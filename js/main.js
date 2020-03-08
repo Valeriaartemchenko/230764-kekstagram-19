@@ -260,7 +260,6 @@ scaleControlBigger.addEventListener('click', function() {
  increaseClickHandler();
 });
 
-
 /*-----------------наложение эфекта на изображение-----------------------------------------*/
 var effectsChoise = upload.querySelector('.effects__radio');
 var effectLevelPin = upload.querySelector('.effect-level__pin');
@@ -269,7 +268,6 @@ var effectLevelDepth = upload.querySelector('.effect-level__depth');
 var effectsRadioSet = upload.querySelector('.effects');
 var effectLevel = upload.querySelector('.img-upload__effect-level');
 
-//сбрасывает уровень эфектов до стандартных настроек
 var setDefaultEffectLevel = function(){
     var DEFAULT_EFFECT_LEVEL = 100;
     effectLevelValue.value = DEFAULT_EFFECT_LEVEL;
@@ -279,7 +277,7 @@ var setDefaultEffectLevel = function(){
 
 var clearEffects = function(element) {
   element.removeAttribute('class');
-  imageUploadPreview.style = ' ';
+  imageUploadPreview.style = '';
   imageUploadPreview.style.transform = 'scale(' + currentScaleValue / 100 + ')'; // чтобы размер изображения не сбрасывался до 100%
 };
 
@@ -295,7 +293,7 @@ var effectChoiseHandler = function (evt) {
     setDefaultEffectLevel();
     clearEffects(imageUploadPreview);
     var effectName = evt.target.value;
-    //console.log(effectName);
+    console.log(effectName);
     imageUploadPreview.classList.add('effects__preview--' + effectName);
     hideAndShowSlider(effectName);
   };
@@ -309,18 +307,17 @@ var LINE_WIDTH = 495;
 
 var changeFilterStyle = function (effectLevelPosition) {
   if (document.querySelector('#effect-none:checked')) {
-    imageUploadPreview.style = '';
-    classList.add
+    imageUploadPreview.style.filter = '';
   } else if (document.querySelector('#effect-chrome:checked')) {
-    imageUploadPreview.style = 'filter: ' + 'grayscale(' + effectLevelPosition / 100 + ')';
+    imageUploadPreview.style.filter = 'grayscale(' + effectLevelPosition / 100 + ')';
   } else if (document.querySelector('#effect-sepia:checked')) {
-    imageUploadPreview.style = 'filter: sepia(' + effectLevelPosition / 100 + ')';
+    imageUploadPreview.style.filter = 'sepia(' + effectLevelPosition / 100 + ')';
   } else if (document.querySelector('#effect-marvin:checked')) {
-    imageUploadPreview.style = 'filter: invert(' + effectLevelPosition + '%)';
+    imageUploadPreview.style.filter = 'invert(' + effectLevelPosition + '%)';
   } else if (document.querySelector('#effect-phobos:checked')) {
-    imageUploadPreview.style = 'filter: blur(' + 3 * effectLevelPosition / 100 + 'px)';
+    imageUploadPreview.style.filter = 'blur(' + 3 * effectLevelPosition / 100 + 'px)';
   } else if (document.querySelector('#effect-heat:checked')) {
-    imageUploadPreview.style = 'filter: brightness(' + ((2 * effectLevelPosition / 100) + 1) + ')';
+    imageUploadPreview.style.filter = 'brightness(' + ((2 * effectLevelPosition / 100) + 1) + ')';
   }
 };
 
@@ -378,4 +375,89 @@ return false;
       document.onmousemove = document.onmouseup = null;
    }
 }*/
+
+/*---------------------------валидация хештегов-----------*/
+var hashtags = document.querySelector('.text__hashtags');
+var uploadSubmit = document.querySelector('.img-upload__submit');
+
+var getHashtags = function (inputString){
+  var hashtagsArray = inputString.toLowerCase().split(' ');
+  if (hashtagsArray[0] !== ''){
+    return hashtagsArray;
+  }
+    return 0;
+};
+
+var checkHashSigns = function(hashtagsInput){
+  var errors = [];
+  hashtagsInput.forEach(function(hashtag){
+    if(!hashtag.startsWith('#')){
+      errors.push('Hashtag should start from # sign.');
+    }
+
+    if(hashtag.length<2) {
+    errors.push('Hashtag can\'t be empty');
+    }
+  });
+  return errors;
+}
+
+/*
+var checkHashSign = function (item, index, arr) {
+  var item = arr[index];
+
+  if(item[0] != '#'){
+    hashtags.setCustomValidity('Hashtag should start from # sign.');
+  } else {
+    hashtags.setCustomValidity('');
+  };
+};*/
+
+/*
+var checkHashLength = function(item, index, arr){
+  var item = arr[index];
+  if(item.length<2) {
+    hashtags.setCustomValidity('Hashtag can\'t be empty.');
+  } else {
+    hashtags.setCustomValidity('');
+  };
+}
+
+*/
+
+var checkHashtag = function (){
+  var hashtagsArray = getHashtags(hashtags.value);
+  console.log(hashtagsArray);
+
+  var errors = checkHashSigns(hashtagsArray);
+  console.log(errors);
+
+  hashtags.setCustomValidity(errors.join(' \n'));
+
+  //hashtagsArray.forEach(checkHashSign);
+  //hashtagsArray.forEach(checkHashLength);
+
+  /*
+  for(var i=0; i < hashtagsArray.length;i++ ){
+    var result = hashtagsArray[i];
+    console.log(result[0], typeof(result[0]),result[0] != '#');
+    if(result[0] != '#'){
+      hashtags.setCustomValidity('Hashtag should start from # sign.');
+    } else {
+      hashtags.setCustomValidity('');
+    };
+  };
+  */
+
+};
+
+
+
+hashtags.addEventListener('change', function(){
+  checkHashtag();
+});
+
+uploadSubmit.addEventListener('click', function(){
+  //getHashtags(hashtags.value);
+});
 
