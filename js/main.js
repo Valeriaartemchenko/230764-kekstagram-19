@@ -58,6 +58,7 @@ var photos = createPhotos(DESCRIPTION_ARRAY_LENGTH);
 var usersPicturesList = document.querySelector('.pictures');
 var userPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
+
 var renderPictures = function (amount, photo) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < amount; i++) {
@@ -74,7 +75,8 @@ var renderPictures = function (amount, photo) {
 usersPicturesList.appendChild(renderPictures(DESCRIPTION_ARRAY_LENGTH, photos));
 
 /* ----------------task 3---------------- */
-var photoInPreview = photos[0];
+var photoInPreview = photos[10];
+console.log(photos);
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img').firstElementChild;
 var likesCount = bigPicture.querySelector('.likes-count');
@@ -93,7 +95,7 @@ var hideElement = function (element) {
 };
 
 var renderBigPicture = function (picture) {
-  bigPictureImg.src = picture.url;
+  bigPictureImg.src = picture.url; //строка под вопросом что она делает
   likesCount.textContent = picture.likes;
   commentCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
@@ -120,18 +122,14 @@ var checkModalOpen = function (element) {
 /* ----------------скрыть или показать попап большого изображения---------------- */
 var ESC_KEYCODE = 27;
 var closePreviewBtn = document.querySelector('.big-picture__cancel');
-//  var picture = document.querySelector('.picture');
-// открытие элемента
-var showElement = function (element) {
-  element.classList.remove('hidden');
-};
+var pictures = document.querySelectorAll('.picture');
 
-// закрытие элемента
-var hideElement = function (element) {
-  element.classList.add('hidden');
-};
+//присваиваем каждому элементу коллекции идентификатор, для того чтобы позже использовать привязку к обьекту
+pictures.forEach(function(item,index){
+  item.classList.add('picture'+index);
+});
 
-
+//закрытие окна
 var closeBtnClickHandler = function () {
   hideElement(bigPicture);
   checkModalOpen(bigPicture);
@@ -139,22 +137,41 @@ var closeBtnClickHandler = function () {
 
 // обработка закрытия при нажатии на крестик
 closePreviewBtn.addEventListener('click', closeBtnClickHandler);
-// закрытие при нажатии esc
 
+// закрытие при нажатии esc
 document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeBtnClickHandler();
   }
 });
-
+/*
 var imageClickHandler = function (evt) {
   if (evt.target.matches('.picture__img')) {
-    bigPicture.src = evt.target.src;
+    //bigPicture.src = evt.target.src;
+    //renderBigPicture(evt.target.src);
+    console.log(evt.target.src);
     showElement(bigPicture);
     checkModalOpen(bigPicture);
   }
 };
 document.addEventListener('click', imageClickHandler);
+*/
+var relations = new Map();
+
+//click = evt => console.log(relations.get(e.target));
+var imageClick = function(evt){
+  console.log(relations.get(evt.target));
+}
+
+photos.forEach(function(item, index){
+  relations.set(document.querySelector('picture'+index), item)
+});
+
+document.querySelectorAll('picture').forEach(p => p.onclick = imageClick);
+/*
+pictures.forEach(function(item){
+  item.addEventListener('click', imageClick);
+});*/
 /*  -----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
@@ -427,5 +444,3 @@ var checkHashtag = function () {
 uploadSubmit.addEventListener('click', function () {
   checkHashtag();
 });
-
-
