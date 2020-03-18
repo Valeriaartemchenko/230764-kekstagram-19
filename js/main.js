@@ -75,13 +75,10 @@ var renderPictures = function (amount, photo) {
 usersPicturesList.appendChild(renderPictures(DESCRIPTION_ARRAY_LENGTH, photos));
 
 /* ----------------task 3---------------- */
-var photoInPreview = photos[10];
-console.log(photos);
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img').firstElementChild;
 var likesCount = bigPicture.querySelector('.likes-count');
 var commentCount = bigPicture.querySelector('.comments-count');
-//  var socialComments = bigPicture.querySelector('.social__comments');
 var socialCaption = bigPicture.querySelector('.social__caption');
 
 // открытие
@@ -95,13 +92,11 @@ var hideElement = function (element) {
 };
 
 var renderBigPicture = function (picture) {
-  bigPictureImg.src = picture.url; //строка под вопросом что она делает
+  bigPictureImg.src = picture.url; //строка записывает в src большого изображения,то что было передано в обьекте
   likesCount.textContent = picture.likes;
   commentCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
 };
-
-renderBigPicture(photoInPreview);
 
 var socialCommentCount = bigPicture.querySelector('.social__comment-count');
 hideElement(socialCommentCount);
@@ -123,11 +118,13 @@ var checkModalOpen = function (element) {
 var ESC_KEYCODE = 27;
 var closePreviewBtn = document.querySelector('.big-picture__cancel');
 var pictures = document.querySelectorAll('.picture');
+var picturesImg = document.querySelectorAll('.picture__img');
+console.log('Коллекция фотографий');
+console.log(picturesImg);
 
-//присваиваем каждому элементу коллекции идентификатор, для того чтобы позже использовать привязку к обьекту
-pictures.forEach(function(item,index){
-  item.classList.add('picture'+index);
-});
+///picturesImg.forEach(function(item,index){
+  //item.classList.add('pictureImg'+index);
+//});
 
 //закрытие окна
 var closeBtnClickHandler = function () {
@@ -144,34 +141,32 @@ document.addEventListener('keydown', function (evt) {
     closeBtnClickHandler();
   }
 });
-/*
+
+// module 4- task3 Реализация возможности просмотра любой фотографии в полноразмерном режиме;
+// создаем обьект map в котором будем привязывать к значению evt.target (изображения по которому кликнули) значение из обьета photos, где хранятся все данный об изображении
+
+const myMap = new Map();
+
+picturesImg.forEach(function(item,index){
+  // присваиваем каждому элементу коллекции изображений идентификатор, для того чтобы позже использовать привязку к обьекту. Тут именно изображение, потому что при клике в evt.target будет изображение, а не ссылка picture
+  item.classList.add('pictureImg'+index);
+  // присваиваем каждому элементу коллекции изображений обьект которые это изображение описывает
+  myMap.set(item, photos[index]);
+});
+
 var imageClickHandler = function (evt) {
   if (evt.target.matches('.picture__img')) {
-    //bigPicture.src = evt.target.src;
-    //renderBigPicture(evt.target.src);
-    console.log(evt.target.src);
+    // записываю в переменную полученное значение обьекта
+    var objectToRender = myMap.get(evt.target);
+    // рендерю большое изображение
+    renderBigPicture(objectToRender);
+    // показываю элемент
     showElement(bigPicture);
     checkModalOpen(bigPicture);
   }
 };
+// обработчик клика на изображение
 document.addEventListener('click', imageClickHandler);
-*/
-var relations = new Map();
-
-//click = evt => console.log(relations.get(e.target));
-var imageClick = function(evt){
-  console.log(relations.get(evt.target));
-}
-
-photos.forEach(function(item, index){
-  relations.set(document.querySelector('picture'+index), item)
-});
-
-document.querySelectorAll('picture').forEach(p => p.onclick = imageClick);
-/*
-pictures.forEach(function(item){
-  item.addEventListener('click', imageClick);
-});*/
 /*  -----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
@@ -325,44 +320,6 @@ var pinLevelClickHandler = function (evt) {
 };
 
 effectLevel.addEventListener('mouseup', pinLevelClickHandler);
-
-/*
-var slider = document.getElementById('slider');
-var item = slider.querySelector('#item');
-var result = document.getElementById('result');
-
-var sliderClientCoords = slider.getBoundingClientRect();
-var sliderCoords = {};
-sliderCoords.top = sliderClientCoords.top + pageYOffset;
-sliderCoords.left = sliderClientCoords.left + pageXOffset;
-
-item.onmousedown = function(e){
-   item.ondragstart = function() {
-      return false;
-   };
-
-   var itemClientCoords = item.getBoundingClientRect();
-   var itemCoords = {};
-   itemCoords.top = itemClientCoords.top + pageYOffset;
-   itemCoords.left = itemClientCoords.left + pageXOffset;
-
-   var right = slider.offsetWidth - item.offsetWidth;
-
-   var shiftX = e.pageX - itemCoords.left;
-
-   document.onmousemove = function(e){
-      var newLeft = e.pageX - sliderCoords.left - shiftX;
-      if(newLeft < 0) newLeft = 0;
-      if(newLeft > right) newLeft = right;
-      item.style.left = newLeft + 'px';
-      result.innerHTML = Math.round(newLeft / right * 100) + '%';
-return false;
-   }
-
-   document.onmouseup = function(){
-      document.onmousemove = document.onmouseup = null;
-   }
-}*/
 
 /* ---------------------------валидация хештегов-----------*/
 var hashtags = document.querySelector('.text__hashtags');
