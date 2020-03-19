@@ -116,15 +116,11 @@ var checkModalOpen = function (element) {
 
 /* ----------------скрыть или показать попап большого изображения---------------- */
 var ESC_KEYCODE = 27;
+var TAB_KEYCODE = 9;
+var ENTER_KEYCODE = 13;
 var closePreviewBtn = document.querySelector('.big-picture__cancel');
 var pictures = document.querySelectorAll('.picture');
 var picturesImg = document.querySelectorAll('.picture__img');
-console.log('Коллекция фотографий');
-console.log(picturesImg);
-
-///picturesImg.forEach(function(item,index){
-  //item.classList.add('pictureImg'+index);
-//});
 
 //закрытие окна
 var closeBtnClickHandler = function () {
@@ -167,6 +163,30 @@ var imageClickHandler = function (evt) {
 };
 // обработчик клика на изображение
 document.addEventListener('click', imageClickHandler);
+
+// для обработки нажатия на элемент в фокусе
+var focusedElementKeydownHandler = function(evt){
+  var isFocused = document.activeElement;
+  console.log(isFocused);
+  if (isFocused.classList.contains('picture')){
+    var objectToRender = myMap.get(isFocused.firstElementChild); //тут
+    renderBigPicture(objectToRender);
+    showElement(bigPicture);
+    checkModalOpen(bigPicture);
+  };
+
+};
+
+// обработка открытия изображения через нажатие на enter
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    focusedElementKeydownHandler();
+  }
+});
+
+//1 находим на каком элементе находится фокус
+//проверяем картинка это или нет
+//Если да, то вешаем обработчик нажатия на ентер
 /*  -----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
