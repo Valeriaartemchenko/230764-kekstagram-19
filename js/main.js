@@ -132,11 +132,19 @@ var closeBtnClickHandler = function () {
 closePreviewBtn.addEventListener('click', closeBtnClickHandler);
 
 // закрытие при нажатии esc
-document.addEventListener('keydown', function (evt) {
+/*document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeBtnClickHandler();
   }
-});
+});*/
+
+var escKeyPressHandler = function(evt){
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBtnClickHandler();
+  };
+};
+
+document.addEventListener('keydown', escKeyPressHandler);
 
 // module 4- task3 Реализация возможности просмотра любой фотографии в полноразмерном режиме;
 // создаем обьект map в котором будем привязывать к значению evt.target (изображения по которому кликнули) значение из обьета photos, где хранятся все данный об изображении
@@ -167,14 +175,12 @@ document.addEventListener('click', imageClickHandler);
 // для обработки нажатия на элемент в фокусе
 var focusedElementKeydownHandler = function(evt){
   var isFocused = document.activeElement;
-  console.log(isFocused);
   if (isFocused.classList.contains('picture')){
     var objectToRender = myMap.get(isFocused.firstElementChild); //тут
     renderBigPicture(objectToRender);
     showElement(bigPicture);
     checkModalOpen(bigPicture);
   };
-
 };
 
 // обработка открытия изображения через нажатие на enter
@@ -184,9 +190,6 @@ document.addEventListener('keydown', function (evt) {
   }
 });
 
-//1 находим на каком элементе находится фокус
-//проверяем картинка это или нет
-//Если да, то вешаем обработчик нажатия на ентер
 /*  -----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
@@ -421,3 +424,14 @@ var checkHashtag = function () {
 uploadSubmit.addEventListener('click', function () {
   checkHashtag();
 });
+
+//не доделала функцию
+/*
+var focusedInputKeydownHandler = function(evt){
+  var isFocused = document.activeElement;
+  if (isFocused.classList.contains('img-upload__text')){
+    do
+  };
+};
+*/
+
