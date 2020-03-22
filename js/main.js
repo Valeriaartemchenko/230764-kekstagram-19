@@ -58,6 +58,7 @@ var photos = createPhotos(DESCRIPTION_ARRAY_LENGTH);
 var usersPicturesList = document.querySelector('.pictures');
 var userPictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
+
 var renderPictures = function (amount, photo) {
   var fragment = document.createDocumentFragment();
   for (var i = 0; i < amount; i++) {
@@ -74,12 +75,10 @@ var renderPictures = function (amount, photo) {
 usersPicturesList.appendChild(renderPictures(DESCRIPTION_ARRAY_LENGTH, photos));
 
 /* ----------------task 3---------------- */
-var photoInPreview = photos[0];
 var bigPicture = document.querySelector('.big-picture');
 var bigPictureImg = bigPicture.querySelector('.big-picture__img').firstElementChild;
 var likesCount = bigPicture.querySelector('.likes-count');
 var commentCount = bigPicture.querySelector('.comments-count');
-//  var socialComments = bigPicture.querySelector('.social__comments');
 var socialCaption = bigPicture.querySelector('.social__caption');
 
 // открытие
@@ -93,13 +92,11 @@ var hideElement = function (element) {
 };
 
 var renderBigPicture = function (picture) {
-  bigPictureImg.src = picture.url;
+  bigPictureImg.src = picture.url; //строка записывает в src большого изображения,то что было передано в обьекте
   likesCount.textContent = picture.likes;
   commentCount.textContent = picture.comments.length;
   socialCaption.textContent = picture.description;
 };
-
-renderBigPicture(photoInPreview);
 
 var socialCommentCount = bigPicture.querySelector('.social__comment-count');
 hideElement(socialCommentCount);
@@ -119,19 +116,13 @@ var checkModalOpen = function (element) {
 
 /* ----------------скрыть или показать попап большого изображения---------------- */
 var ESC_KEYCODE = 27;
+var TAB_KEYCODE = 9;
+var ENTER_KEYCODE = 13;
 var closePreviewBtn = document.querySelector('.big-picture__cancel');
-//  var picture = document.querySelector('.picture');
-// открытие элемента
-var showElement = function (element) {
-  element.classList.remove('hidden');
-};
+var pictures = document.querySelectorAll('.picture');
+var picturesImg = document.querySelectorAll('.picture__img');
 
-// закрытие элемента
-var hideElement = function (element) {
-  element.classList.add('hidden');
-};
-
-
+//закрытие окна
 var closeBtnClickHandler = function () {
   hideElement(bigPicture);
   checkModalOpen(bigPicture);
@@ -139,22 +130,66 @@ var closeBtnClickHandler = function () {
 
 // обработка закрытия при нажатии на крестик
 closePreviewBtn.addEventListener('click', closeBtnClickHandler);
-// закрытие при нажатии esc
 
-document.addEventListener('keydown', function (evt) {
+// закрытие при нажатии esc
+/*document.addEventListener('keydown', function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeBtnClickHandler();
   }
+});*/
+
+var PreviewESCKeyPressHandler = function(evt){
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeBtnClickHandler();
+  };
+};
+
+document.addEventListener('keydown', PreviewESCKeyPressHandler);
+
+// module 4- task3 Реализация возможности просмотра любой фотографии в полноразмерном режиме;
+// создаем обьект map в котором будем привязывать к значению evt.target (изображения по которому кликнули) значение из обьета photos, где хранятся все данный об изображении
+
+const myMap = new Map();
+
+picturesImg.forEach(function(item,index){
+  // присваиваем каждому элементу коллекции изображений идентификатор, для того чтобы позже использовать привязку к обьекту. Тут именно изображение, потому что при клике в evt.target будет изображение, а не ссылка picture
+  item.classList.add('pictureImg'+index);
+  // присваиваем каждому элементу коллекции изображений обьект которые это изображение описывает
+  myMap.set(item, photos[index]);
 });
 
 var imageClickHandler = function (evt) {
   if (evt.target.matches('.picture__img')) {
-    bigPicture.src = evt.target.src;
+    // записываю в переменную полученное значение обьекта
+    var objectToRender = myMap.get(evt.target);
+    // рендерю большое изображение
+    renderBigPicture(objectToRender);
+    // показываю элемент
     showElement(bigPicture);
     checkModalOpen(bigPicture);
   }
 };
+// обработчик клика на изображение
 document.addEventListener('click', imageClickHandler);
+
+// для обработки нажатия на элемент в фокусе
+var focusedElementKeydownHandler = function(evt){
+  var isFocused = document.activeElement;
+  if (isFocused.classList.contains('picture')){
+    var objectToRender = myMap.get(isFocused.firstElementChild); //тут
+    renderBigPicture(objectToRender);
+    showElement(bigPicture);
+    checkModalOpen(bigPicture);
+  };
+};
+
+// обработка открытия изображения через нажатие на enter
+document.addEventListener('keydown', function (evt) {
+  if (evt.keyCode === ENTER_KEYCODE) {
+    focusedElementKeydownHandler();
+  }
+});
+
 /*  -----------------------task 4.1 ----------------------*/
 
 var upload = document.querySelector('.img-upload');
@@ -177,11 +212,24 @@ uploadFileField.addEventListener('change', editFormFieldChangeHandler);
 
 closeEditFormBtn.addEventListener('click', closeEditFormClickHandler);
 
-document.addEventListener('keydown', function (evt) {
+var FormESCKeyPresshandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeEditFormClickHandler();
   }
-});
+};
+
+// если фокус находиться в поле хештега или комментария, то форма не закрывается при нажатии на esc
+var editFormClickHandler = function(){
+  var isFocused = document.activeElement;
+  if (isFocused == hashtags || isFocused == comments){
+    console.log("focused input");
+    document.removeEventListener('keydown', FormESCKeyPresshandler);
+  } else {
+    document.addEventListener('keydown', FormESCKeyPresshandler);
+  }
+};
+
+document.addEventListener('click', editFormClickHandler);
 
 /* ------------task 4.2 изменение размера изображения----------*/
 
@@ -309,46 +357,9 @@ var pinLevelClickHandler = function (evt) {
 
 effectLevel.addEventListener('mouseup', pinLevelClickHandler);
 
-/*
-var slider = document.getElementById('slider');
-var item = slider.querySelector('#item');
-var result = document.getElementById('result');
-
-var sliderClientCoords = slider.getBoundingClientRect();
-var sliderCoords = {};
-sliderCoords.top = sliderClientCoords.top + pageYOffset;
-sliderCoords.left = sliderClientCoords.left + pageXOffset;
-
-item.onmousedown = function(e){
-   item.ondragstart = function() {
-      return false;
-   };
-
-   var itemClientCoords = item.getBoundingClientRect();
-   var itemCoords = {};
-   itemCoords.top = itemClientCoords.top + pageYOffset;
-   itemCoords.left = itemClientCoords.left + pageXOffset;
-
-   var right = slider.offsetWidth - item.offsetWidth;
-
-   var shiftX = e.pageX - itemCoords.left;
-
-   document.onmousemove = function(e){
-      var newLeft = e.pageX - sliderCoords.left - shiftX;
-      if(newLeft < 0) newLeft = 0;
-      if(newLeft > right) newLeft = right;
-      item.style.left = newLeft + 'px';
-      result.innerHTML = Math.round(newLeft / right * 100) + '%';
-return false;
-   }
-
-   document.onmouseup = function(){
-      document.onmousemove = document.onmouseup = null;
-   }
-}*/
-
 /* ---------------------------валидация хештегов-----------*/
 var hashtags = document.querySelector('.text__hashtags');
+var comments = document.querySelector('.text__description');
 var uploadSubmit = document.querySelector('.img-upload__submit');
 
 // Функция для записи строки хештегов в массив
@@ -423,9 +434,17 @@ var checkHashtag = function () {
   var errors = removeDuplicates(checkHashSigns(hashtagsArray));
   hashtags.setCustomValidity(errors.join(' \n'));
 };
+/*
+var checkComment = function(input) {
+  var max = input.maxlength;
+  if (input.length>max){
+    comments.setCustomValidity('Максимум 140 символов');
+  }
+};
 
 uploadSubmit.addEventListener('click', function () {
   checkHashtag();
+  checkComment(comments);
 });
-
+*/
 
