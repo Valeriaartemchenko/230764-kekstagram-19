@@ -138,13 +138,13 @@ closePreviewBtn.addEventListener('click', closeBtnClickHandler);
   }
 });*/
 
-var escKeyPressHandler = function(evt){
+var PreviewESCKeyPressHandler = function(evt){
   if (evt.keyCode === ESC_KEYCODE) {
     closeBtnClickHandler();
   };
 };
 
-document.addEventListener('keydown', escKeyPressHandler);
+document.addEventListener('keydown', PreviewESCKeyPressHandler);
 
 // module 4- task3 Реализация возможности просмотра любой фотографии в полноразмерном режиме;
 // создаем обьект map в котором будем привязывать к значению evt.target (изображения по которому кликнули) значение из обьета photos, где хранятся все данный об изображении
@@ -212,11 +212,24 @@ uploadFileField.addEventListener('change', editFormFieldChangeHandler);
 
 closeEditFormBtn.addEventListener('click', closeEditFormClickHandler);
 
-document.addEventListener('keydown', function (evt) {
+var FormESCKeyPresshandler = function (evt) {
   if (evt.keyCode === ESC_KEYCODE) {
     closeEditFormClickHandler();
   }
-});
+};
+
+// если фокус находиться в поле хештега или комментария, то форма не закрывается при нажатии на esc
+var editFormClickHandler = function(){
+  var isFocused = document.activeElement;
+  if (isFocused == hashtags || isFocused == comments){
+    console.log("focused input");
+    document.removeEventListener('keydown', FormESCKeyPresshandler);
+  } else {
+    document.addEventListener('keydown', FormESCKeyPresshandler);
+  }
+};
+
+document.addEventListener('click', editFormClickHandler);
 
 /* ------------task 4.2 изменение размера изображения----------*/
 
@@ -346,6 +359,7 @@ effectLevel.addEventListener('mouseup', pinLevelClickHandler);
 
 /* ---------------------------валидация хештегов-----------*/
 var hashtags = document.querySelector('.text__hashtags');
+var comments = document.querySelector('.text__description');
 var uploadSubmit = document.querySelector('.img-upload__submit');
 
 // Функция для записи строки хештегов в массив
@@ -420,18 +434,17 @@ var checkHashtag = function () {
   var errors = removeDuplicates(checkHashSigns(hashtagsArray));
   hashtags.setCustomValidity(errors.join(' \n'));
 };
+/*
+var checkComment = function(input) {
+  var max = input.maxlength;
+  if (input.length>max){
+    comments.setCustomValidity('Максимум 140 символов');
+  }
+};
 
 uploadSubmit.addEventListener('click', function () {
   checkHashtag();
+  checkComment(comments);
 });
-
-//не доделала функцию
-/*
-var focusedInputKeydownHandler = function(evt){
-  var isFocused = document.activeElement;
-  if (isFocused.classList.contains('img-upload__text')){
-    do
-  };
-};
 */
 
