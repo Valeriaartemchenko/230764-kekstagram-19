@@ -105,7 +105,7 @@ var commentsLoader = bigPicture.querySelector('.comments-loader');
 hideElement(commentsLoader);
 
 
-// проаеряет открыто ли модальное окно, и если да выключает скрол  страницы
+// проверяет открыто ли модальное окно, и если да выключает скрол  страницы
 var checkModalOpen = function (element) {
   if (!element.classList.contains('hidden')) {
     document.body.classList.add('modal-open');
@@ -434,17 +434,11 @@ var checkHashtag = function () {
   var errors = removeDuplicates(checkHashSigns(hashtagsArray));
   hashtags.setCustomValidity(errors.join(' \n'));
 };
-/*
-var checkComment = function(input) {
-  var max = input.maxlength;
-  if (input.length>max){
-    comments.setCustomValidity('Максимум 140 символов');
-  }
-};
+
 
 uploadSubmit.addEventListener('click', function () {
   checkHashtag();
   checkComment(comments);
 });
-*/
+
 
