@@ -13,6 +13,8 @@
   var editFormFieldChangeHandler = function () {
     window.util.showElement(imageEditForm);
     window.util.checkModalOpen(imageEditForm);
+    //при загрузке нового изображения размер сбрасивается до 100 - начальный уровень
+    window.util.currentScaleValue = window.util.DEFAULT_EFFECT_LEVEL;
     window.util.setDefaultEffectLevel();
   };
 
