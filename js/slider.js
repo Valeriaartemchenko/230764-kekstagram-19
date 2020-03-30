@@ -2,6 +2,7 @@
 
 (function(){
   var LINE_WIDTH = 495;
+  var LEFT_OFFSET = 397;
   var imageUploadPreview = document.querySelector('.img-upload__preview img');
   var effectLevelPin = document.querySelector('.effect-level__pin');
   var effectLevelValue = document.querySelector('.effect-level__value');
@@ -25,15 +26,29 @@
     }
   };
 
-  var pinLevelClickHandler = function (evt) {
-    var mouseupCoordinate = evt.offsetX;
-    var effectLevelPosition = Math.floor((mouseupCoordinate / LINE_WIDTH) * 100);
-    effectLevelValue.value = effectLevelPosition;
-    effectLevelPin.style.left = effectLevelPosition + '%';
-    effectLevelDepth.style.width = effectLevelPosition + '%';
-    changeFilterStyle(effectLevelPosition);
+
+  effectLevelPin.addEventListener('mousedown', function(evt){
+    evt.preventDefault();
+
+    var pinLevelMouseMoveHandler = function (moveevt) {
+      var mouseMoveCoordinate = moveevt.clientX - LEFT_OFFSET;
+      var effectLevelPosition = Math.floor(mouseMoveCoordinate / (LINE_WIDTH-18) * 100);
+      effectLevelValue.value = effectLevelPosition;
+      effectLevelPin.style.left = effectLevelPosition + '%';
+      effectLevelDepth.style.width = effectLevelPosition + '%';
+      changeFilterStyle(effectLevelPosition);
   };
 
-  effectLevel.addEventListener('mouseup', pinLevelClickHandler);
+    var pinLevelUpHandler = function(upEvt){
+      effectLevel.removeEventListener('mousemove', pinLevelMouseMoveHandler);
+      effectLevel.removeEventListener('mouseup', pinLevelUpHandler);
+    };
 
+    effectLevel.addEventListener('mousemove', pinLevelMouseMoveHandler);
+    effectLevel.addEventListener('mouseup', pinLevelUpHandler);
+  });
 })();
+
+
+
+
