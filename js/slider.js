@@ -26,8 +26,7 @@
     }
   };
 
-
-  effectLevelPin.addEventListener('mousedown', function(evt){
+    var initSlider = function(evt,someFunction){
     evt.preventDefault();
 
     var pinLevelMouseMoveHandler = function (moveevt) {
@@ -36,7 +35,7 @@
       effectLevelValue.value = effectLevelPosition;
       effectLevelPin.style.left = effectLevelPosition + '%';
       effectLevelDepth.style.width = effectLevelPosition + '%';
-      changeFilterStyle(effectLevelPosition);
+      someFunction(effectLevelPosition);
   };
 
     var pinLevelUpHandler = function(upEvt){
@@ -46,7 +45,12 @@
 
     effectLevel.addEventListener('mousemove', pinLevelMouseMoveHandler);
     effectLevel.addEventListener('mouseup', pinLevelUpHandler);
+  };
+
+  effectLevelPin.addEventListener('mousedown', function(evt){
+    initSlider(evt,changeFilterStyle);
   });
+
 })();
 
 
